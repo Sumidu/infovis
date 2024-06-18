@@ -466,6 +466,7 @@ checkerboard(matrix(
 ```{r echo=FALSE, message=FALSE, warning=FALSE, dpi=150}
 pop %>% 
   filter(year == 2019) %>% 
+  na.omit() %>%
   mutate(Country = fct_reorder(`Country Name`, -population)) %>% 
   filter(Country %in% c("China", "India", "United States", "Brazil", "Germany")) %>%
   ggplot() + 
@@ -495,6 +496,7 @@ checkerboard(matrix(
 ```{r echo=FALSE, message=FALSE, warning=FALSE, dpi=150}
 pop %>% 
   filter(year == 2019) %>% 
+  na.omit() %>%
   mutate(Country = fct_reorder(`Country Name`, population)) %>% 
   filter(Country %in% c("China", "India", "United States", "Brazil", "Germany")) %>%
   ggplot() + 
@@ -526,7 +528,8 @@ checkerboard(matrix(
 ```{r echo=FALSE, message=FALSE, warning=FALSE, dpi=150}
 pop %>% 
   filter(year == 2019) %>% 
-  mutate(Country = fct_reorder(`Country Name`, population)) %>% 
+  na.omit() %>%
+  mutate(Country = fct_reorder(`Country Name`, population))%>% 
   filter(Country %in% c("China", "India", "United States", "Brazil", "Germany")) %>%
   ggplot() + 
   aes(x = Country, y = population) + 
@@ -552,13 +555,14 @@ checkerboard(matrix(
 ---
 ## Dot Matrix (Points)
 .pull-left.width-50[
-```{r}
+```{r echo=FALSE}
 mpg %>% 
   group_by(manufacturer,cyl) %>% 
-  summarize(n = n()) %>% 
+  summarize(n = n(), .groups = "drop") %>% 
   ggplot() +
   aes(x = factor(cyl), y = manufacturer, size = n) +
   geom_point() + theme_minimal_grid()
+
 ```
 ]
 
@@ -610,7 +614,7 @@ checkerboard(matrix(
 ## Plotting maps (Areas)
 
 .pull-left.width-60[
-```{r echo = FALSE}
+```{r echo=FALSE, message=FALSE}
 library(maps)
 # Some EU Contries
 some.eu.countries <- c(

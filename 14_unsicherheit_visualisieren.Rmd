@@ -18,6 +18,7 @@ output:
 options(htmltools.dir.version = FALSE)
 knitr::opts_chunk$set(comment = "")
 knitr::opts_chunk$set(warning = FALSE)
+knitr::opts_chunk$set(message = FALSE)
 library(tidyverse)
 library(here)
 library(colorspace)
