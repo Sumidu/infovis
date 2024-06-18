@@ -1,0 +1,35 @@
+---
+title: "Einführung"
+subtitle: "Informationsvisualisierung"
+author: "**Prof. Dr. André Calero Valdez**<br />" # can use md or html
+date: "letzte Änderung: `r Sys.Date()`"
+output:
+  xaringan::moon_reader:
+    css: [default, "imis.css"]
+    lib_dir: libs
+    nature:
+      #ratio: '16:9'
+      highlightStyle: github
+      highlightLines: true
+      slideNumberFormat: ''
+      titleSlideClass: [center, middle]
+---
+
+```{r setup, include=FALSE, echo=FALSE}
+options(htmltools.dir.version = FALSE)
+knitr::opts_chunk$set(comment = "")
+
+library(tidyverse)
+library(lubridate)
+library(cowplot)
+library(here)
+library(xaringanExtra)
+xaringanExtra::use_scribble()
+# ggplot2 settings so plots scale well for slide size 
+theme_set(theme_gray(16)) # 16 for full width, 18 for half width 
+update_geom_defaults("point", list(size = 2)) # 2 for full width, 2.5 for half width
+```
+
+
+## New Introduction needed
+

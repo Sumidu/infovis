@@ -1,0 +1,43 @@
+---
+title: "Übersicht"
+subtitle: "Informationsvisualisierung"
+author: "**Prof. Dr. André Calero Valdez**<br />" # can use md or html
+date: ""
+output:
+  xaringan::moon_reader:
+    seal: false
+    css: ["default", "default-fonts", "imis.css"]  
+    lib_dir: libs
+    nature:
+      highlightStyle: github
+      highlightLines: true
+      countIncrementalSlides: false
+---
+
+```{r setup, include=FALSE}
+library(stringr)
+library(glue)
+options(htmltools.dir.version = FALSE)
+```
+
+## Informationsvisualisierung und Sprache
+**Übersicht**
+```{r agenda, echo=FALSE, results='asis'}
+# Write a function to read find all html files and get their titles and create a list
+files <- dir(pattern = ".html")
+files <- files[!files %in% c("index.html")]
+rmds <- dir(pattern = ".Rmd")
+res <- "\n"
+for (i in 2:length(files)) {
+  matching_rmd <- str_replace(files[i], ".html", ".Rmd")
+  title <- rmarkdown::yaml_front_matter(matching_rmd)$title
+  res <- paste0(res, 
+                glue(" {i-1} - {title} [Link]({files[i]})<br/>\n")
+                )
+}
+cat(res)
+
+# TODO: move figures to includegraphics
+# TODO: separate topics in individual smaller chunks
+```
+

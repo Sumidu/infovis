@@ -1,0 +1,305 @@
+---
+title: "Mengen visualisieren"
+subtitle: "Informationsvisualisierung"
+author: "**Prof. Dr. André Calero Valdez**<br />" # can use md or html
+date: "letzte Änderung: `r Sys.Date()`"
+output:
+  xaringan::moon_reader:
+    css: [default, "imis.css"]
+    lib_dir: libs
+    nature:
+      ratio: '16:9'
+      highlightStyle: github
+      highlightLines: true
+      slideNumberFormat: ''
+      titleSlideClass: [center, middle]
+---
+
+```{r setup, include=FALSE, echo=FALSE}
+options(htmltools.dir.version = FALSE)
+knitr::opts_chunk$set(comment = "")
+knitr::opts_chunk$set(warning = FALSE)
+library(xaringanExtra)
+xaringanExtra::use_scribble()
+library(tidyverse)
+# ggplot2 settings so plots scale well for slide size 
+theme_set(theme_gray(16)) # 16 for full width, 18 for half width 
+update_geom_defaults("point", list(size = 2)) # 2 for full width, 2.5 for half width
+```
+
+
+# Datensatz: Filme mit den höchsten Einspielergebnissen Dez. 2017
+
+.tiny-font[
+```{r}
+# Data from Box Office Mojo for Dec. 22-24, 2017. 
+boxoffice <- tibble(
+  rank = 1:5,
+  title = c("Star Wars", "Jumanji", "Pitch Perfect 3", "Greatest Showman", "Ferdinand"),
+  amount = c(71.57, 36.17, 19.93, 8.81, 7.32) # million USD
+)
+```
+]
+
+.center[
+```{r echo = FALSE}
+boxoffice %>%
+  knitr::kable("html")
+```
+]
+
+---
+
+## Visualisierung als "Bar-Plot"
+
+.small-font[
+```{r boxoffice-naive, eval = FALSE}
+ggplot(boxoffice, aes(title, amount)) +
+  geom_col()  # "col" stands for column
+```
+]
+
+--
+
+.center[
+```{r boxoffice-naive-out, ref.label = "boxoffice-naive", echo = FALSE, fig.width = 8, fig.asp = 0.4, dev = "svg"}
+```
+]
+
+--
+
+Ist das eine gute Visualisierung?
+
+---
+
+## Daten nach Größe sortieren
+
+.small-font[
+```{r boxoffice-ordered, eval = FALSE}
+ggplot(boxoffice, aes(fct_reorder(title, amount), amount)) +
+  geom_col()
+```
+]
+
+.center[
+```{r boxoffice-ordered-out, ref.label = "boxoffice-ordered", echo = FALSE, fig.width = 8, fig.asp = 0.4, dev = "svg"}
+```
+]
+
+---
+
+## Daten nach Größe absteigend sortieren
+
+.small-font[
+```{r boxoffice-ordered2, eval = FALSE}
+ggplot(boxoffice, aes(fct_reorder(title, -amount), amount)) +
+  geom_col() + 
+  xlab(NULL) # remove x axis label
+```
+]
+
+.center[
+```{r boxoffice-ordered2-out, ref.label = "boxoffice-ordered2", echo = FALSE, fig.width = 8, fig.asp = 0.4, dev = "svg"}
+```
+]
+
+
+---
+
+## Flip x und y, manuelle x-Achsen Beschriftung
+
+.small-font[
+```{r boxoffice-ordered3, eval = FALSE}
+ggplot(boxoffice, aes(amount, fct_reorder(title, amount))) +
+  geom_col() +
+  xlab("Umsatz (in Millionen USD)") +
+  ylab(NULL)
+```
+]
+
+.center[
+```{r boxoffice-ordered3-out, ref.label = "boxoffice-ordered3", echo = FALSE, fig.width = 5.5, fig.asp = 0.618, dev = "svg"}
+```
+]
+
+---
+background-image: url(https://raw.githubusercontent.com/allisonhorst/palmerpenguins/master/man/figures/logo.png)
+background-position: 95% 5%
+background-size: 8%
+
+
+## In manchen Datensätzen müssen wir zuerst zählen
+
+.small-font[
+```{r}
+library(palmerpenguins)
+head(penguins)
+```
+]
+
+Ziel: Anzahl der Pinguine je Spezies visualisieren
+
+???
+
+Image credit: [Artwork by @allison_horst](https://github.com/allisonhorst/palmerpenguins/#artwork)
+
+---
+
+## Das `geom_bar()` zählt vor dem Plotten
+
+.small-font[
+```{r penguins-bars, eval = FALSE}
+ggplot(penguins, aes(y = species)) + # note: no x aesthetic defined
+  geom_bar()
+```
+]
+
+.center[
+```{r penguins-bars-out, ref.label = "penguins-bars", echo = FALSE, fig.width = 5.5, fig.asp = 0.618, dev = "svg"}
+```
+]
+
+
+
+---
+
+## Balken in die richtige Reihenfolge bringen
+
+Option 1: Händisch mit `fct_relevel()`
+
+.tiny-font[
+```{r penguins-bars2, eval = FALSE}
+ggplot(penguins, aes(y = fct_relevel(species, "Chinstrap", "Gentoo", "Adelie"))) +
+  geom_bar() +
+  ylab(NULL)
+```
+]
+
+.center[
+```{r penguins-bars2-out, ref.label = "penguins-bars2", echo = FALSE, fig.width = 5.5, fig.asp = 0.618, dev = "svg"}
+```
+]
+
+---
+
+## Balken in die richtige Reihenfolge bringen
+
+Option 2: Mit R-Magic
+
+.tiny-font[
+```{r penguins-bars3, eval = FALSE}
+ggplot(penguins, aes(y = fct_reorder(species, species, length))) + # Why does this work?
+  geom_bar() +
+  ylab(NULL)
+```
+]
+
+.center[
+```{r penguins-bars3-out, ref.label = "penguins-bars3", echo = FALSE, fig.width = 5.5, fig.asp = 0.618, dev = "svg"}
+```
+]
+
+
+---
+
+## Häufigkeiten nach Spezies und Geschlecht
+
+.small-font[
+```{r penguins-sex-species, eval = FALSE}
+ggplot(penguins, aes(sex, fill = species)) +
+  geom_bar()
+```
+]
+
+.center[
+```{r penguins-sex-species-out, ref.label = "penguins-sex-species", echo = FALSE, fig.width = 5.5, fig.asp = 0.618, dev = "svg"}
+```
+]
+
+---
+
+## Fehlende Werte (`NA`s) ausblenden 
+
+.tiny-font[
+```{r penguins-sex-species2, eval = FALSE}
+penguins_nomissing <- na.omit(penguins) # remove all rows with any missing values
+
+ggplot(penguins_nomissing, aes(sex, fill = species)) +
+  geom_bar()
+```
+]
+
+.center[
+```{r penguins-sex-species2-out, ref.label = "penguins-sex-species2", echo = FALSE, fig.width = 5.5, fig.asp = 0.618, dev = "svg"}
+```
+]
+
+---
+
+## Positions definieren wie Untergruppen angezeigt werden
+
+`position = "dodge"`: Platziert Balken der Untergruppen nebeneinander
+
+.small-font[
+```{r penguins-sex-species-dodge, eval = FALSE}
+ggplot(penguins_nomissing, aes(sex, fill = species)) +
+  geom_bar(position = "dodge")
+```
+]
+
+.center[
+```{r penguins-sex-species-dodge-out, ref.label = "penguins-sex-species-dodge", echo = FALSE, fig.width = 5.5, fig.asp = 0.618, dev = "svg"}
+```
+]
+
+to dodge = engl. ausweichen
+
+---
+
+## Positions definieren wie Untergruppen angezeigt werden
+
+`position = "stack"`: Platziert Balken der Untergruppen übereinander
+
+.small-font[
+```{r penguins-sex-species-stack, eval = FALSE}
+ggplot(penguins_nomissing, aes(sex, fill = species)) +
+  geom_bar(position = "stack")
+```
+]
+
+.center[
+```{r penguins-sex-species-stack-out, ref.label = "penguins-sex-species-stack", echo = FALSE, fig.width = 5.5, fig.asp = 0.618, dev = "svg"}
+```
+]
+
+to stack = engl. stapeln
+---
+
+## Positions definieren wie Untergruppen angezeigt werden
+
+`position = "fill"`: Wie `"stack"`, aber skaliert auf 100%
+
+.small-font[
+```{r penguins-sex-species-fill, eval = FALSE}
+ggplot(penguins_nomissing, aes(sex, fill = species)) +
+  geom_bar(position = "fill")
+```
+]
+
+.center[
+```{r penguins-sex-species-fill-out, ref.label = "penguins-sex-species-fill", echo = FALSE, fig.width = 5.5, fig.asp = 0.618, dev = "svg"}
+```
+]
+
+---
+
+## Literatur
+
+- Fundamentals of Data Visualization: [Kapitel 6: Visualizing amounts](https://clauswilke.com/dataviz/visualizing-amounts.html)
+- Data Visualization—A Practical Introduction: [Kapitel 4.4: Geoms can transform data](https://socviz.co/groupfacettx.html#statfunctions)
+- **ggplot2** reference documentation: [`geom_bar()`, `geom_col()`](https://ggplot2.tidyverse.org/reference/geom_bar.html)
+- **ggplot2** reference documentation: [`position_stack()`, `position_fill()`](https://ggplot2.tidyverse.org/reference/position_stack.html)
+
+
+
+

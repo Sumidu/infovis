@@ -1,0 +1,744 @@
+---
+title: "Channels and Marks"
+subtitle: "Informationsvisualisierung"
+author: "**Prof. Dr. André Calero Valdez**<br />" # can use md or html
+date: "letzte Änderung: `r Sys.Date()`"
+output:
+  xaringan::moon_reader:
+    css: [default, "imis.css"]
+    lib_dir: libs
+    nature:
+      #ratio: '16:9'
+      highlightStyle: github
+      highlightLines: true
+      slideNumberFormat: ''
+      titleSlideClass: [center, middle]
+---
+
+```{r setup, include=FALSE, echo=FALSE}
+options(htmltools.dir.version = FALSE)
+knitr::opts_chunk$set(comment = "")
+knitr::opts_chunk$set(warning = FALSE)
+library(tidyverse)
+library(lubridate)
+library(cowplot)
+library(here)
+library(xaringanExtra)
+library(reactable)
+library(formattable)
+#xaringanExtra::use_scribble()
+# ggplot2 settings so plots scale well for slide size 
+theme_set(theme_gray(16)) # 16 for full width, 18 for half width 
+update_geom_defaults("point", list(size = 2)) # 2 for full width, 2.5 for half width
+source("channels.R")
+```
+
+## Zielpublikum identifizieren
+
+### Wir kennen und verstehen unsere Datenattribute und Messniveaus
+
+- Categorical 
+- Ordered 
+- Quantitative
+
+**Ziel: Wir wollen die effektivste Visualisierung wählen**
+
+---
+
+## Channels und Marks Theorie
+
+
+- Channels: 
+  - Position
+  - Farbe 
+  - Form
+- Marks: 
+ - Punkte 
+ - Linien 
+ - Flächen
+ 
+ Channels entsprechen Ästhetiken und Marks entsprechen Geomen in der ggplot-Welt
+
+**Wie wählt man Channels und Marks basierend auf Datenattributen und Aufgabe?**
+
+---
+## Mapping von Channels und Marks
+
+
+```{r demo_mpg, echo=FALSE}
+mpg %>% head(9) %>% knitr::kable()
+```
+
+Zeilen sind Marks, Spalten sind Channels
+  
+
+
+---
+.pull-left[
+```{r echo=FALSE}
+theme_set(theme_minimal_hgrid(18))
+```
+
+## Marks
+* Points
+* Lines 
+* Areas
+<br/>
+<br/>
+<br/>
+<br/>
+
+
+]
+.pull-right[
+## Channels
+```{r overview, echo=FALSE, dpi=300}
+checkerboard(matrix(
+  c(1,1,1,
+    1,1,1,
+    0,1,1,
+    0,1,1,
+    1,0,0),byrow=T,nrow=5))
+```
+]
+
+
+---
+## Scatterplot (Points)
+.pull-left.width-50[
+```{r figure, dpi = 150, echo=FALSE}
+ggplot(mtcars) + aes(x = mpg, y = drat) + geom_point(size = 4)
+```
+
+]
+.pull-right.width-40[
+```{r tbl, echo=FALSE, dpi=300}
+checkerboard(matrix(
+  c(0,0,1,
+    0,0,1,
+    0,0,0,
+    0,0,0,
+    0,0,0),byrow=T,nrow=5))
+```
+]
+
+---
+## Scatterplot (Points)
+.pull-left.width-50[
+```{r, dpi = 150, echo=FALSE}
+ggplot(mtcars) + aes(x = mpg, y = drat) + geom_point(size = 14, alpha = 0.5)
+```
+
+]
+.pull-right.width-40[
+```{r, echo=FALSE, dpi=300}
+checkerboard(matrix(
+  c(0,0,1,
+    0,0,1,
+    0,0,0,
+    0,0,0,
+    0,0,0),byrow=T,nrow=5))
+```
+]
+
+---
+## Scatterplot (Points)
+.pull-left.width-50[
+```{r, dpi = 150, echo=FALSE}
+ggplot(mtcars) + aes(x = mpg, y = drat, color = factor(cyl)) + geom_point(size = 14, alpha = 0.5) +
+  guides(color = FALSE)
+```
+
+]
+.pull-right.width-40[
+```{r, echo=FALSE, dpi=300}
+checkerboard(matrix(
+  c(0,0,1,
+    0,0,1,
+    0,0,0,
+    0,0,0,
+    1,0,0),byrow=T,nrow=5))
+```
+]
+
+
+---
+## Scatterplot (Points)
+.pull-left.width-50[
+```{r, dpi = 150, echo=FALSE}
+ggplot(mtcars) + 
+  aes(x = mpg, y = disp, color = factor(cyl), size = drat) + 
+  geom_point(alpha = 0.5) +
+  scale_size(range = c(4,24)) +
+  guides(color = FALSE, size = FALSE)
+```
+
+]
+.pull-right.width-40[
+```{r, echo=FALSE, dpi=300}
+checkerboard(matrix(
+  c(0,0,1,
+    0,0,1,
+    0,0,1,
+    0,0,0,
+    1,0,0),byrow=T,nrow=5), scale = "x2500")
+```
+]
+
+
+---
+## Timeseries (Points)
+.pull-left.width-50[
+```{r echo=FALSE, message=FALSE, dpi=150}
+sf_temps <- read_csv(here::here("datasets", "sf_temps.csv"))
+ggplot(sf_temps) + 
+  aes(x = timestamp, y = temperature) + 
+  geom_point() +
+  scale_size(range = c(4,24)) +
+  guides(color = FALSE, size = FALSE)
+```
+
+]
+.pull-right.width-40[
+```{r, echo=FALSE, dpi=300}
+checkerboard(matrix(
+  c(0,0,1,
+    0,0,1,
+    0,0,0,
+    0,0,0,
+    0,0,0),byrow=T,nrow=5)
+  )
+```
+]
+
+
+---
+## Timeseries (Points + Lines)
+.pull-left.width-50[
+```{r echo=FALSE, message=FALSE, dpi=150}
+ggplot(sf_temps) + 
+  aes(x = timestamp, y = temperature) + 
+  geom_point() +
+  geom_line() +
+  scale_size(range = c(4,24)) +
+  guides(color = FALSE, size = FALSE)
+```
+
+]
+.pull-right.width-40[
+```{r, echo=FALSE, dpi=300}
+checkerboard(matrix(
+  c(0,0,1,
+    0,0,1,
+    0,0,0,
+    0,0,0,
+    0,0,0),byrow=T,nrow=5)
+  )
+```
+]
+
+
+
+---
+## Timeseries (Lines)
+.pull-left.width-50[
+```{r echo=FALSE, message=FALSE, dpi=150}
+ggplot(sf_temps) + 
+  aes(x = timestamp, y = temperature) + 
+  geom_line() +
+  scale_size(range = c(4,24)) +
+  guides(color = FALSE, size = FALSE)
+```
+
+]
+.pull-right.width-40[
+```{r, echo=FALSE, dpi=300}
+checkerboard(matrix(
+  c(0,0,1,
+    0,0,1,
+    0,0,0,
+    0,0,0,
+    0,0,0),byrow=T,nrow=5)
+  )
+```
+]
+
+
+---
+## Timeseries (Areas)
+.pull-left.width-50[
+```{r echo=FALSE, message=FALSE, dpi=150}
+ggplot(sf_temps) + 
+  aes(x = timestamp, y = temperature) + 
+  geom_area(fill = "darkred") +
+  scale_size(range = c(4,24)) +
+  guides(color = FALSE, size = FALSE) +
+  coord_cartesian(ylim=c(14, 32))
+```
+]
+
+.pull-right.width-40[
+```{r, echo=FALSE, dpi=300}
+checkerboard(matrix(
+  c(0,0,1,
+    0,0,0,
+    0,0,1,
+    0,0,0,
+    0,0,0),byrow=T,nrow=5)
+  )
+```
+]
+
+--
+.red[
+**Area Marks täuschen, wenn Achse nicht bei Null beginnt!**
+]
+
+
+
+---
+## Timeseries (Areas)
+.pull-left.width-50[
+```{r echo=FALSE, message=FALSE, warning=FALSE, dpi=150}
+pop <- read_csv(here::here("datasets", "worldpopulation.csv"), skip = 3) %>% 
+  select(-`Indicator Name`, -`Indicator Code`, -`Country Code`) %>% 
+  pivot_longer(cols = -`Country Name`, names_to = "year", values_to = "population") %>% 
+  mutate(year = as.numeric(year))
+
+
+pop %>% filter(`Country Name` == "World") %>% 
+  ggplot() + 
+  aes(x = year, y = population) + 
+  geom_area(fill = "darkgreen") +
+  guides(color = FALSE, size = FALSE) +
+  scale_y_continuous(labels = comma)
+```
+]
+
+.pull-right.width-40[
+```{r, echo=FALSE, dpi=300}
+checkerboard(matrix(
+  c(0,0,1,
+    0,0,0,
+    0,0,1,
+    0,0,0,
+    0,0,0),byrow=T,nrow=5)
+  )
+```
+]
+
+**Besser**
+
+---
+
+## Timeseries (Areas)
+.pull-left.width-50[
+```{r echo=FALSE, message=FALSE, warning=FALSE, dpi=150}
+pop %>% filter(`Country Name` %in% c("China", "India", "Brazil", "USA", "Germany")) %>% 
+  ggplot() + 
+  aes(x = year, y = population, fill = `Country Name`) + 
+  geom_area() +
+  guides(color = FALSE, size = FALSE) +
+  theme(legend.position = "top") +
+  scale_y_continuous(labels = comma)
+```
+]
+
+.pull-right.width-40[
+```{r, echo=FALSE, dpi=300}
+checkerboard(matrix(
+  c(0,0,1,
+    0,0,0,
+    0,0,1,
+    0,0,0,
+    1,0,0),byrow=T,nrow=5)
+  )
+```
+]
+
+---
+
+## Timeseries (Lines)
+.pull-left.width-50[
+```{r echo=FALSE, message=FALSE, warning=FALSE, dpi=150}
+pop %>% filter(`Country Name` %in% c("China", "India", "Brazil", "USA", "Germany")) %>% 
+  ggplot() + 
+  aes(x = year, y = population, color = `Country Name`) + 
+  geom_line(size = 2) +
+  guides() +
+  theme(legend.position = "top") +
+  scale_y_continuous(labels = comma)
+```
+]
+
+.pull-right.width-40[
+```{r, echo=FALSE, dpi=300}
+checkerboard(matrix(
+  c(0,0,1,
+    0,0,0,
+    0,0,1,
+    0,0,0,
+    1,0,0),byrow=T,nrow=5)
+  )
+```
+]
+
+
+---
+```{r echo=FALSE}
+regs <-tribble(~religion,~population,
+"Christian",2173100000,
+"Muslim",1598360000,
+"Unaffiliated",1126280000,
+"Hindu",1032860000,
+"Buddhist",487320000,
+"Folk Religions",404890000,
+"Other Religions",57770000,
+"Jewish",13640000) %>% 
+  mutate(fraction = population / sum(population)) %>% 
+  mutate(ymax = cumsum(fraction))  %>% 
+  mutate(ymin = lag(ymax, default = 0)) %>% 
+  mutate(religion = fct_reorder(religion, -population))
+
+
+```
+
+## Piechart - Proportions (Areas)
+.pull-left.width-50[
+```{r echo=FALSE, message=FALSE, warning=FALSE, dpi=150}
+regs %>% 
+  ggplot() + 
+  aes(ymax=ymax, ymin=ymin, xmax=4, xmin=0, fill = religion) + 
+  geom_rect(color = "white") +
+  coord_polar(theta="y") +
+  theme(legend.position = "right") +
+  colorspace::scale_fill_discrete_qualitative() +
+  theme_void()
+```
+
+]
+
+.pull-right.width-40[
+```{r, echo=FALSE, dpi=300}
+checkerboard(matrix(
+  c(0,0,1,
+    0,0,0,
+    0,0,1,
+    0,0,0,
+    1,0,0),byrow=T,nrow=5)
+  )
+```
+]
+
+---
+## Donut Chart - Proportions (Areas)
+.pull-left.width-50[
+```{r echo=FALSE, message=FALSE, warning=FALSE, dpi=150}
+regs %>% 
+  ggplot() + 
+  aes(ymax=ymax, ymin=ymin, xmax=4, xmin=3, fill = religion) + 
+  geom_rect(color = "white") +
+  coord_polar(theta="y") + # Try to remove that to understand how the chart is built initially
+  xlim(c(2, 4)) +
+  theme(legend.position = "right") +
+  colorspace::scale_fill_discrete_qualitative() +
+  theme_void()
+```
+
+]
+
+.pull-right.width-40[
+```{r, echo=FALSE, dpi=300}
+checkerboard(matrix(
+  c(0,0,1,
+    0,0,0,
+    0,0,1,
+    0,0,0,
+    1,0,0),byrow=T,nrow=5)
+  )
+```
+]
+
+
+---
+## Bar Chart (Lines)
+.pull-left.width-50[
+```{r echo=FALSE, message=FALSE, warning=FALSE, dpi=150}
+pop %>% 
+  filter(year == 2019) %>% 
+  mutate(Country = fct_reorder(`Country Name`, -population)) %>% 
+  filter(Country %in% c("China", "India", "United States", "Brazil", "Germany")) %>%
+  ggplot() + 
+  aes(x = Country, y = population) + 
+  geom_col(color = "white") 
+```
+
+]
+
+.pull-right.width-40[
+```{r, echo=FALSE, dpi=300}
+checkerboard(matrix(
+  c(1,0,0,
+    0,0,0,
+    0,0,1,
+    0,0,0,
+    0,0,0),byrow=T,nrow=5)
+  )
+```
+]
+
+
+---
+
+## Lollipop Chart (Points & Lines)
+.pull-left.width-50[
+```{r echo=FALSE, message=FALSE, warning=FALSE, dpi=150}
+pop %>% 
+  filter(year == 2019) %>% 
+  mutate(Country = fct_reorder(`Country Name`, population)) %>% 
+  filter(Country %in% c("China", "India", "United States", "Brazil", "Germany")) %>%
+  ggplot() + 
+  aes(x = Country, y = population) + 
+  geom_segment( aes(x=Country, xend=Country, y=0, yend=population), color = "darkgray", size = 2) +
+  geom_point(size = 5, color = "orange") +
+  theme_minimal_vgrid() +
+  coord_flip()
+```
+
+]
+
+.pull-right.width-40[
+```{r, echo=FALSE, dpi=300}
+checkerboard(matrix(
+  c(0,0,1,
+    1,0,0,
+    0,0,1,
+    0,0,0,
+    0,0,0),byrow=T,nrow=5)
+  )
+```
+]
+
+---
+
+## Dot Chart (Points)
+.pull-left.width-50[
+```{r echo=FALSE, message=FALSE, warning=FALSE, dpi=150}
+pop %>% 
+  filter(year == 2019) %>% 
+  mutate(Country = fct_reorder(`Country Name`, population)) %>% 
+  filter(Country %in% c("China", "India", "United States", "Brazil", "Germany")) %>%
+  ggplot() + 
+  aes(x = Country, y = population) + 
+  geom_point(size = 5, color = "orange") +
+  theme_minimal_grid() +
+  coord_flip()
+```
+
+]
+
+.pull-right.width-40[
+```{r, echo=FALSE, dpi=300}
+checkerboard(matrix(
+  c(0,0,1,
+    1,0,0,
+    0,0,0,
+    0,0,0,
+    0,0,0),byrow=T,nrow=5)
+  )
+```
+]
+
+---
+## Dot Matrix (Points)
+.pull-left.width-50[
+```{r}
+mpg %>% 
+  group_by(manufacturer,cyl) %>% 
+  summarize(n = n()) %>% 
+  ggplot() +
+  aes(x = factor(cyl), y = manufacturer, size = n) +
+  geom_point() + theme_minimal_grid()
+```
+]
+
+.pull-right.width-40[
+```{r, echo=FALSE, dpi=300}
+checkerboard(matrix(
+  c(0,1,0,
+    1,0,0,
+    0,0,1,
+    0,0,0,
+    0,0,0),byrow=T,nrow=5)
+  )
+```
+]
+
+---
+## Streamgraph (Areas)
+.pull-left.width-40[
+```{r warning=FALSE, echo=FALSE}
+library(streamgraph)
+ggplot2movies::movies %>%
+  select(year, Action, Animation, Comedy, Drama, Documentary, Romance, Short) %>%
+  tidyr::gather(genre, value, -year) %>%
+  group_by(year, genre) %>%
+  tally(wt=value) -> dat
+
+streamgraph(dat, "genre", "n", "year", interactive=TRUE, width = 400) %>%
+  sg_axis_x(20, "year", "%Y") %>%
+  sg_fill_brewer("PuOr")
+```
+]
+
+.pull-right.width-40[
+```{r, echo=FALSE, dpi=300}
+checkerboard(matrix(
+  c(0,0,1,
+    0,0,0,
+    0,0,1,
+    0,0,0,
+    1,0,0),byrow=T,nrow=5)
+  )
+```
+]
+
+
+
+---
+
+## Plotting maps (Areas)
+
+.pull-left.width-60[
+```{r echo = FALSE}
+library(maps)
+# Some EU Contries
+some.eu.countries <- c(
+  "Portugal", "Spain", "France", "Switzerland", "Germany",
+  "Austria", "Belgium", "Netherlands",
+  "Denmark", "Poland", "Italy", 
+  "Croatia", "Slovenia", "Hungary", "Slovakia",
+  "Czech republic"
+)
+# Retrievethe map data
+some.eu.maps <- map_data("world", region = some.eu.countries)
+
+# Compute the centroid as the mean longitude and lattitude
+# Used as label coordinate for country's names
+region.lab.data <- some.eu.maps %>%
+  group_by(region) %>%
+  summarise(long = mean(long), lat = mean(lat))
+
+
+population %>% 
+  mutate(region = country) %>% 
+  filter(year == 2010) %>% 
+  right_join(some.eu.maps) %>% 
+ggplot() + 
+  aes(x = long, y = lat) +
+  geom_polygon(aes( group = group, fill = population)) +
+  geom_text(aes(label = region), data = region.lab.data,  size = 3, hjust = 0.5) +
+  scale_fill_viridis_c() +
+  theme_void() +
+  theme(legend.position = "right")
+```
+]
+
+
+.pull-right.width-40[
+```{r, echo=FALSE, dpi=300}
+checkerboard(matrix(
+  c(1,0,0,
+    1,0,0,
+    0,0,0,
+    0,0,1,
+    0,0,0),byrow=T,nrow=5)
+  )
+```
+]
+
+
+
+---
+background-image: url("channels_marks/overview2.png")
+background-position: 50% 50%
+background-size: 100%
+
+  
+  
+---
+background-image: url("channels_marks/markschannels_munzner.png")
+background-position: 50% 50%
+background-size: 100%
+
+.footnote[Nach Tamara Munzner Folien und Videoworkshop: 
+http://www.cs.ubc.ca/~tmm/talks.html#vad17fullday]
+
+---
+background-image: url("channels_marks/bertin.png")
+background-position: 50% 50%
+background-size: 60%
+
+.footnote[Aus Jacques Bertin - Semiology of Graphics]
+
+
+---
+
+background-image: url("channels_marks/krygierwood.png")
+background-position: 50% 50%
+background-size: 80%
+
+---
+background-image: url("channels_marks/bocher.png")
+background-position: 50% 50%
+background-size: 40%
+
+.footnote[From "A redesign of OGC Symbology Encoding standard for sharing cartography" by Erwan Bocher, Olivier Ertz
+https://peerj.com/articles/cs-143/?utm_content=buffer67428]
+
+---
+class: center, middle
+
+# Aber wie wählt man zwischen alternativen Techniken?
+
+---
+background-image: url("channels_marks/mckinlay.png")
+background-position: 50% 50%
+background-size: 80%
+
+---
+background-image: url("channels_marks/cleveland.png")
+background-position: 50% 50%
+background-size: 100%
+
+---
+background-image: url("channels_marks/steven.png")
+background-position: 50% 50%
+background-size: 60%
+
+---
+background-image: url("channels_marks/bertin2.png")
+background-position: 50% 50%
+background-size: 55%
+
+.footnote[Von Jacques Bertin]
+
+
+---
+background-image: url("channels_marks/munzner1.png")
+background-position: 50% 50%
+background-size: 100%
+
+---
+background-image: url("channels_marks/munzner2.png")
+background-position: 50% 50%
+background-size: 100%
+
+---
+background-image: url("channels_marks/munzner3.png")
+background-position: 50% 50%
+background-size: 100%
+
+
+
+
