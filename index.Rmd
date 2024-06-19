@@ -31,6 +31,7 @@ res <- "\n"
 for (i in 2:length(files)) {
   matching_rmd <- str_replace(files[i], ".html", ".Rmd")
   title <- rmarkdown::yaml_front_matter(matching_rmd)$title
+  # generate List entries and links
   res <- paste0(res, 
                 glue(" {i-1} - {title} [Link]({files[i]})<br/>\n")
                 )

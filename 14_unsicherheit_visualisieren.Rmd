@@ -468,7 +468,7 @@ point_color <- darken("lightblue", .5)
 # model fit
 fit <- lm(highpoint_metres ~ 1, data = everest_2019)
 CI_df <- data.frame(type = c(0.8, 0.95, 0.99)) %>%
-  mutate(df = map(type, ~summary(emmeans(fit, ~ 1, options = list(level = .x))))) %>%
+  mutate(df = purrr::map(type, ~summary(emmeans(fit, ~ 1, options = list(level = .x))))) %>%
   unnest(cols = df) %>%
   select(type, estimate = emmean, std.error = SE, conf.low = lower.CL, conf.high = upper.CL) %>%
   mutate(type = paste0(signif(100*type, 2), "% Konfidenzintervall"))
