@@ -24,7 +24,7 @@ library(lubridate)
 library(cowplot)
 library(here)
 library(xaringanExtra)
-xaringanExtra::use_scribble()
+#xaringanExtra::use_scribble()
 # ggplot2 settings so plots scale well for slide size 
 theme_set(theme_gray(16)) # 16 for full width, 18 for half width 
 update_geom_defaults("point", list(size = 2)) # 2 for full width, 2.5 for half width
@@ -37,4 +37,12 @@ Diese Vorlesung fasst die Grundlagen der Informationsvisualisierung zusammen.
 Sie können die Folien und den Code auf [GitHub](https://github.com/Sumidu/infovis) finden.
 
 Die Folien sind live unter http://slides.calerovaldez.com/infovis verfügbar.
+
+
+---
+
+## Todos und Work in Progress
+- [ ] `gganimate` wurde geupdated und die Beispiele zu den Animationen funktionieren nicht mehr gut.
+- [ ] Streamgraph funktioniert noch nicht so wie gewünscht.
+- [ ] `rgeos` is no longer available => `practicalgg` muss geupdated werden.
 
