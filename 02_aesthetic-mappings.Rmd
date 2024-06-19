@@ -8,7 +8,7 @@ output:
     css: [default, "imis.css"]
     lib_dir: libs
     nature:
-      ratio: '16:9'
+      #ratio: '16:9'
       highlightStyle: github
       highlightLines: true
       slideNumberFormat: ''
@@ -20,7 +20,7 @@ options(htmltools.dir.version = FALSE)
 knitr::opts_chunk$set(comment = "")
 knitr::opts_chunk$set(warning = FALSE)
 library(xaringanExtra)
-xaringanExtra::use_scribble()
+#xaringanExtra::use_scribble()
 library(tidyverse)
 library(lubridate)
 library(cowplot)

@@ -17,3 +17,5 @@ for (i in 1:length(files)) {
   message(paste0("Rendering document: ", files[i]))
   rmarkdown::render(input = paste0(base_path, "/", files[i]))
 }
+
+rmarkdown::render(input = paste0(base_path, "/index.Rmd"))

@@ -375,8 +375,8 @@ pop %>% filter(`Country Name` %in% c("China", "India", "Brazil", "USA", "Germany
 ```{r, echo=FALSE, dpi=300}
 checkerboard(matrix(
   c(0,0,1,
-    0,0,0,
     0,0,1,
+    0,0,0,
     0,0,0,
     1,0,0),byrow=T,nrow=5)
   )

@@ -8,7 +8,7 @@ output:
     css: [default, "imis.css"]
     lib_dir: libs
     nature:
-      ratio: '16:9'
+      #ratio: '16:9'
       highlightStyle: github
       highlightLines: true
       slideNumberFormat: ''
@@ -864,8 +864,8 @@ gapminder %>%
 gapminder %>%
   nest(data = -c(continent, year)) %>%
   mutate(
-    fit = map(data, ~lm(lifeExp ~ log(gdpPercap), data = .x)),
-    tidy_out = map(fit, tidy)
+    fit = purrr::map(data, ~lm(lifeExp ~ log(gdpPercap), data = .x)),
+    tidy_out = purrr::map(fit, tidy)
   ) %>%
   unnest(cols = tidy_out) %>%
   filter(term != "(Intercept)", continent != "Oceania") %>%
@@ -945,7 +945,7 @@ lm_data$data[[1]]
 lm_data <- gapminder %>%
   nest(data = -c(continent, year)) %>%
   mutate(
-    fit = map(data, ~lm(lifeExp ~ log(gdpPercap), data = .x))
+    fit =purrr::map(data, ~lm(lifeExp ~ log(gdpPercap), data = .x))
   )
 
 lm_data
@@ -961,8 +961,8 @@ lm_data
 lm_data <- gapminder %>%
   nest(data = -c(continent, year)) %>%
   mutate(
-    fit = map(data, ~lm(lifeExp ~ log(gdpPercap), data = .x)),
-    tidy_out = map(fit, tidy)
+    fit = purrr::map(data, ~lm(lifeExp ~ log(gdpPercap), data = .x)),
+    tidy_out = purrr::map(fit, tidy)
   )
 
 lm_data
@@ -978,8 +978,8 @@ lm_data
 lm_data <- gapminder %>%
   nest(data = -c(continent, year)) %>%
   mutate(
-    fit = map(data, ~lm(lifeExp ~ log(gdpPercap), data = .x)),
-    tidy_out = map(fit, tidy)
+    fit = purrr::map(data, ~lm(lifeExp ~ log(gdpPercap), data = .x)),
+    tidy_out = purrr::map(fit, tidy)
   ) %>%
   unnest(cols = tidy_out)
 
@@ -996,8 +996,8 @@ lm_data
 lm_data <- gapminder %>%
   nest(data = -c(continent, year)) %>%
   mutate(
-    fit = map(data, ~lm(lifeExp ~ log(gdpPercap), data = .x)),
-    tidy_out = map(fit, tidy)
+    fit = purrr::map(data, ~lm(lifeExp ~ log(gdpPercap), data = .x)),
+    tidy_out = purrr::map(fit, tidy)
   ) %>%
   unnest(cols = tidy_out) %>%
   select(-fit, -data)
@@ -1016,8 +1016,8 @@ lm_data
 lm_data <- gapminder %>%
   nest(data = -c(continent, year)) %>%
   mutate(
-    fit = map(data, ~lm(lifeExp ~ log(gdpPercap), data = .x)),
-    tidy_out = map(fit, tidy)
+    fit = purrr::map(data, ~lm(lifeExp ~ log(gdpPercap), data = .x)),
+    tidy_out =purrr::map(fit, tidy)
   ) %>%
   unnest(cols = tidy_out) %>%
   select(-fit, -data) %>%

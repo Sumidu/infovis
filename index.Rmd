@@ -20,14 +20,14 @@ library(glue)
 options(htmltools.dir.version = FALSE)
 ```
 
-## Informationsvisualisierung und Sprache
+## Informationsvisualisierung
 **Übersicht**
 ```{r agenda, echo=FALSE, results='asis'}
 # Write a function to read find all html files and get their titles and create a list
 files <- dir(pattern = ".html")
 files <- files[!files %in% c("index.html")]
 rmds <- dir(pattern = ".Rmd")
-res <- "\n"
+res <- "\n<small>\n"
 for (i in 2:length(files)) {
   matching_rmd <- str_replace(files[i], ".html", ".Rmd")
   title <- rmarkdown::yaml_front_matter(matching_rmd)$title
@@ -36,6 +36,7 @@ for (i in 2:length(files)) {
                 glue(" {i-1} - {title} [Link]({files[i]})<br/>\n")
                 )
 }
+res <- paste0(res, "</small>")
 cat(res)
 
 # TODO: move figures to includegraphics
