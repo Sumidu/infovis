@@ -30,7 +30,7 @@ files <- files[!files %in% c("index.html")]
 rmds <- dir(pattern = ".Rmd")
 res <- "\n<small>\n"
 middle_index <- ceiling(length(files)/2)
-for (i in 2:middle_index) {
+for (i in 1:middle_index) {
   matching_rmd <- str_replace(files[i], ".html", ".Rmd")
   title <- rmarkdown::yaml_front_matter(matching_rmd)$title
   # generate List entries and links
