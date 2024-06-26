@@ -36,7 +36,7 @@ Diese Vorlesung fasst die Grundlagen der Informationsvisualisierung zusammen.
 
 Sie können die Folien und den Code auf [GitHub](https://github.com/Sumidu/infovis) finden.
 
-Die Folien sind live unter http://slides.calerovaldez.com/infovis verfügbar.
+Die Folien sind live unter https://hciuse.de/infovis verfügbar.
 
 
 ---

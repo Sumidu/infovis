@@ -24,6 +24,7 @@ params:
 options(htmltools.dir.version = FALSE)
 knitr::opts_chunk$set(comment = "")
 knitr::opts_chunk$set(warning = FALSE)
+knitr::opts_chunk$set(echo = FALSE)
 library(tidyverse)
 library(here)
 library(cowplot)
@@ -134,14 +135,14 @@ p <- gdp_ranked %>%
   transition_reveal(year) +
   labs(x = "Jahr")
 
-#animate(
-#  p,
+animate(
+  p,
 #  width = 8*params$res,
 #  height = 0.618*8*params$res,
-#  res = params$res,
-#  nframes = params$nframes,
+  res = params$res,
+  nframes = params$nframes
 #  fps = params$fps
-#)
+)
 ```
 ]
 
@@ -266,14 +267,14 @@ p <- gdp_ranked %>%
   geom_col(aes(fill = country)) +
   transition_states(year, transition_length = 5)
 
-#animate(
-#  p,
+animate(
+  p,
 #  width = 6*params$res,
 #  height = 5*params$res,
-#  res = params$res,
-#  nframes = params$nframes,
+  res = params$res,
+  nframes = params$nframes
 #  fps = params$fps
-#)
+)
 ```
 ]
 
@@ -326,14 +327,14 @@ p <- gdp_ranked %>%
   guides(fill = "none") +
   transition_states(year, transition_length = 5)
 
-#animate(
-#  p,
+animate(
+  p,
 #  width = 6*params$res,
 #  height = 6*params$res,
-#  res = params$res,
-#  nframes = params$nframes,
+  res = params$res,
+  nframes = params$nframes
 #  fps = params$fps
-#)
+)
 ```
 ]
 
@@ -369,14 +370,14 @@ p <- gdp_ranked %>%
   scale_y_log10() +
   transition_reveal(year)
 
-#animate(
-#  p,
+animate(
+  p,
 #  width = 6*params$res,
 #  height = 0.618*6*params$res,
-#  res = params$res,
-#  nframes = params$nframes,
+  res = params$res,
+  nframes = params$nframes
 #  fps = params$fps
-#)
+)
 ```
 ]
 
@@ -426,14 +427,14 @@ p <- gdp_ranked %>%
   theme(plot.margin = margin(7, 100, 7, 7)) +
   transition_reveal(year)
 
-#animate(
-#  p,
+animate(
+  p,
 #  width = 6*params$res,
 #  height = 0.618*6*params$res,
-#  res = params$res,
-#  nframes = params$nframes,
+  res = params$res,
+  nframes = params$nframes
 #  fps = params$fps
-#)
+)
 ```
 ]
 
